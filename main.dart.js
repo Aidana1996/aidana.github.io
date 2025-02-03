@@ -82113,8 +82113,9 @@ J(a){var s=null,r=$.F().gaY(),q=$.F().gc0(),p=A.fJ(5)
 return A.hB(!1,s,!0,A.cZ(B.Y,new A.bt("Download CV",$.F().ar(18),B.e,"Poppin-Regular",s),B.r,s,new A.cX(B.bh,s,s,p,s,s,B.aq),40*r,s,s,188*q),s,!0,s,s,s,s,s,s,s,s,s,new A.a02(),s,s,s,s)}}
 A.a02.prototype={
 $0(){var s=document.createElement("a")
-s.href="assets/CV/Mustafa .pdf"
-s.download="Mustafa CV"
+s.href="assets/images/Mustafa .pdf"
+s.target="blank"
+s.download="Mustafa CV.pdf"
 s.click()},
 $S:0}
 A.KE.prototype={
