@@ -15,7 +15,7 @@
         }
 
         :root {
-            --primary-blue: #4B5FFF;
+            --primary-blue: #2448E7;
             --dark-blue: #3847D6;
             --white: #FFFFFF;
             --light-gray: #F0F0F0;
@@ -40,47 +40,71 @@
         /* Header */
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 20px 40px;
+            padding: 12px 20px;
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
             z-index: 1000;
+            border-radius: 50px;
         }
 
         .logo {
-            font-size: 18px;
-            font-weight: bold;
+            display: none;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
+            align-items: center;
         }
 
         .nav-btn {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: transparent;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: var(--white);
+            padding: 8px 12px;
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
         }
 
-        .nav-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .nav-btn:hover,
+        .nav-btn.active {
+            color: var(--white);
+        }
+        
+        .nav-btn.icon {
+            font-size: 20px;
+            padding: 8px;
+        }
+        
+        .nav-btn.cta {
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-btn.cta:hover,
+        .nav-btn.cta.active {
+            background-color: var(--white);
+            color: var(--primary-blue);
+            border-color: var(--white);
         }
 
         /* Sections */
         .section {
             min-height: 100vh;
-            padding: 100px 5%;
+            padding: 100px 10%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -88,8 +112,11 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 0.8s ease forwards;
+            width: 100%;
+        }
+        
+        .section > * {
             max-width: 1200px;
-            margin: 0 auto;
             width: 100%;
         }
 
@@ -578,12 +605,13 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="logo">Aidana</div>
             <div class="nav-buttons">
-                <button class="nav-btn" onclick="scrollToSection('home')">🏠 Home</button>
-                <button class="nav-btn" onclick="scrollToSection('about')">ℹ️</button>
-                <button class="nav-btn" onclick="scrollToSection('projects')">🔧</button>
-                <button class="nav-btn" onclick="scrollToSection('contact')">📧</button>
+                <button class="nav-btn icon active" onclick="navigateTo('home')">☀️</button>
+                <button class="nav-btn" onclick="navigateTo('work')">Work</button>
+                <button class="nav-btn" onclick="navigateTo('about')">Story</button>
+                <button class="nav-btn" onclick="navigateTo('process')">Process</button>
+                <button class="nav-btn" onclick="navigateTo('contact')">Chat</button>
+                <button class="nav-btn cta" onclick="navigateTo('contact')">Start project</button>
             </div>
         </header>
 
@@ -600,7 +628,7 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        <span class="hero-hello">Hello &</span>
+                        <span class="hero-hello">Hello &</span><br>
                         <span class="hero-welcome">Welcome!</span>
                     </h1>
                     <div class="hero-subtitle-wrapper">
@@ -610,8 +638,8 @@
                 <div class="hero-image-wrapper">
                     <img src="CHATGPT_image.jpg" alt="Aidana">
                 </div>
+                <button class="scroll-btn" onclick="scrollToSection('about')">↓ Scroll Down</button>
             </div>
-            <button class="scroll-btn" onclick="scrollToSection('about')">↓ Scroll Down</button>
         </section>
 
         <!-- About Section -->
@@ -692,22 +720,61 @@
     </div>
 
     <script>
+        // Navigation function
+        function navigateTo(section) {
+            // Remove active class from all buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Map navigation items to sections
+            const sectionMap = {
+                'home': 'home',
+                'work': 'projects',
+                'about': 'about',
+                'process': 'projects',
+                'contact': 'contact'
+            };
+            
+            // Scroll to section
+            if (sectionMap[section]) {
+                scrollToSection(sectionMap[section]);
+            }
+        }
+
         // Smooth scrolling
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
             section.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Update scroll indicator
+        // Update scroll indicator and nav
         function updateScrollIndicator() {
             const sections = document.querySelectorAll('.section');
             const scrollDots = document.querySelectorAll('.scroll-dot');
+            const navButtons = document.querySelectorAll('.nav-btn');
             
             sections.forEach((section, index) => {
                 const rect = section.getBoundingClientRect();
                 if (rect.top <= 100 && rect.bottom >= 100) {
+                    // Update scroll dots
                     scrollDots.forEach(dot => dot.classList.remove('active'));
-                    scrollDots[index].classList.add('active');
+                    if (scrollDots[index]) scrollDots[index].classList.add('active');
+                    
+                    // Update nav based on current section
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    if (section.id === 'home') {
+                        navButtons[0].classList.add('active'); // Sunshine icon
+                    } else if (section.id === 'projects') {
+                        navButtons[1].classList.add('active'); // Work
+                    } else if (section.id === 'about') {
+                        navButtons[2].classList.add('active'); // Story
+                    } else if (section.id === 'contact') {
+                        navButtons[4].classList.add('active'); // Chat
+                    }
                 }
             });
         }
@@ -745,14 +812,49 @@
             }
         }
 
+        // Add active class to current nav button
+        function setActiveNav(sectionId) {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Map sections to nav buttons
+            const sectionMap = {
+                'home': 0,
+                'about': 1,
+                'projects': 0, // Work button
+                'contact': 3  // Chat button
+            };
+            
+            if (sectionMap[sectionId] !== undefined) {
+                navButtons[sectionMap[sectionId]].classList.add('active');
+            }
+        }
+
+        // Update active nav on scroll
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.section');
+            const scrollPosition = window.scrollY + 200;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    setActiveNav(section.id);
+                }
+            });
+        }
+
         // Initialize animations
         window.addEventListener('scroll', () => {
             updateScrollIndicator();
             handleParallax();
+            updateActiveNav();
         });
 
         window.addEventListener('load', () => {
             animateSections();
+            setActiveNav('home');
         });
 
         // Add some interactive effects
